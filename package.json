@@ -1,0 +1,30 @@
+{
+  "name": "path-to-property",
+  "version": "1.0.0",
+  "description": "A simple library to access an object's property using a string path.",
+  "main": "index.js",
+  "private": false,
+  "repository": {"url": "https://github.com/jovelromeo/path-to-property"},
+  "scripts": {
+    "lint": "standard ./*.js",
+    "lint:fix": "npm run lint -- --fix",
+    "start:test": "node .\\test.js",
+    "test": "mocha",
+    "test:dev": "mocha --reporter spec --inspect --watch"
+  },
+  "keywords": [
+    "object",
+    "utils",
+    "property",
+    "keys",
+    "accessor"
+  ],
+  "author": "Romeo Jovel",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.7",
+    "standard": "^16.0.3"
+  }
+}
