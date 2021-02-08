@@ -1,5 +1,6 @@
 # Path to property
 Repo: https://github.com/jovelromeo/path-to-property
+
 ## Usage
 This tiny library consists of only one exported method wich accepts an object and a string.
 ```js
@@ -61,6 +62,18 @@ E.g.
   you can also use quotes for the filter key as 'n.id' wich is executed this way: [..] .filter(x=>x['n.id'] === <value>) [..]
   
   if you dont use quotes and the key has dots as in n.id it wil executed this way: [..] .filter(x=>x.n.id === <value>) [..]
+```
+
+## A simple alternative
+*Need a simpler alternative? Use this: 
+```js
+    const obj = {/*your data*/};
+    const keys = path.split('.');
+    let desiredProp = obj;
+    for (const key of keys) {
+        desidedProp = desiredProp[key];
+    }
+    console.log(desiredProp); // path value
 ```
 
 Fell free to add issues or make some improvements.

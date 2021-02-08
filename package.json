@@ -1,9 +1,8 @@
 {
-  "name": "path-to-property",
+  "name": "advanced-get-value",
   "version": "1.0.0",
   "description": "A simple library to access an object's property using a string path.",
   "main": "index.js",
-  "private": false,
   "repository": {"url": "https://github.com/jovelromeo/path-to-property"},
   "scripts": {
     "lint": "standard ./*.js",
