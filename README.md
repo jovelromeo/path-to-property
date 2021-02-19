@@ -1,5 +1,6 @@
 # Path to property
 Repo: https://github.com/jovelromeo/path-to-property
+NPM: https://www.npmjs.com/package/advanced-get-value
 
 ## Usage
 This tiny library consists of only one exported method wich accepts an object and a string.
