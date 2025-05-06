@@ -12,7 +12,7 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
 (async () => {
   try {
     const response = await client.chat.completions.create({
-      model: "gpt-4o",
+      model: "o4-mini",
       messages: [
         {
           role: "system",
