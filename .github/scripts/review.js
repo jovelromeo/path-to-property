@@ -26,7 +26,7 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
       max_completion_tokens: 2048,
     });
 
-    const comment = response.choices[0].message;
+    const comment = response.choices[0].message.content;
 
     const prNumber = process.env.GITHUB_REF.split('/')[2];
     const repo = process.env.GITHUB_REPOSITORY;
