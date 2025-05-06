@@ -41,4 +41,7 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
     console.error('Error generating review comment:', error);
     process.exit(1);
   }
-})();
+})().then(() => {
+  console.log('Review process completed.');
+  process.exit(0);
+});
