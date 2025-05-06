@@ -18,9 +18,9 @@ jobs:
       - name: Get PR diff
         id: diff
         run: |
-
-                git diff origin/${{ github.base_ref }}...origin/${{ github.event.pull_request.base.ref }} > pr.diff
-         cat pr.diff
+          git fetch origin ${{ github.base_ref }}
+          git diff origin/${{ github.base_ref }}..origin/${{ github.event.pull_request.base.ref }} > pr.diff
+          cat pr.diff
 
       - name: Install GitHub CLI
         run: |
