@@ -34,7 +34,7 @@ jobs:
         run: |
           cd .github/scripts
           npm install openai
-          node .github/scripts/review.js
+          node ./review.js
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
