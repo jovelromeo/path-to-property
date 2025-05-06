@@ -1,17 +1,17 @@
 const fs = require('fs');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 const { execSync } = require('child_process');
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    
 });
-const openai = new OpenAIApi(config);
 
 const diff = fs.readFileSync('pr.diff', 'utf8');
 
 (async () => {
   try {
-    const response = await openai.createChatCompletion({
+    const response = await client.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
