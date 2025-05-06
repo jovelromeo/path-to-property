@@ -4,7 +4,6 @@ const { execSync } = require('child_process');
 
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    
 });
 
 const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
@@ -16,17 +15,18 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
       messages: [
         {
           role: "system",
-          content: "You are a js senior software engineer reviewing a GitHub Pull Request diff. Provide helpful, constructive comments about the changes, potential issues, and improvements. Response starts with '## AI Review Comments' and ends with '## End of IA Review Comments'."
+          content: "You are a senior software engineer reviewing a GitHub Pull Request diff. Provide concise, helpful, constructive comments about the changes, potential issues, and improvements. Response starts with '## AI Review Comments' and ends with '## End of IA Review Comments'."
         },
         {
           role: "user",
           content: `Here is the PR diff:\n\n${diff}`
         }
       ],
-      max_tokens: 2048,
+
+      max_completion_tokens: 2048,
     });
 
-    const comment = response.choices[0].message.content;
+    const comment = response.choices[0].message;
 
     const prNumber = process.env.GITHUB_REF.split('/')[2];
     const repo = process.env.GITHUB_REPOSITORY;
