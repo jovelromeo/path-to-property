@@ -32,7 +32,8 @@ jobs:
 
       - name: Install dependencies and run review script
         run: |
-          npm install -g openai
+          cd .github/scripts
+          npm install openai
           node .github/scripts/review.js
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
