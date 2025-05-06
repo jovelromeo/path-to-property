@@ -31,7 +31,12 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
     const prNumber = process.env.GITHUB_REF.split('/')[2];
     const repo = process.env.GITHUB_REPOSITORY;
 
-    execSync(`gh pr comment ${prNumber} --body "${comment}"`, {
+    // Write the comment to a temporary file to avoid shell escaping issues
+    const tempFilePath = '/tmp/comment.txt';
+    fs.writeFileSync(tempFilePath, comment);
+
+    // Use the temporary file with the gh command
+    execSync(`gh pr comment ${prNumber} --body-file "${tempFilePath}"`, {
       env: {
         ...process.env,
       },
