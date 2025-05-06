@@ -7,7 +7,7 @@ const client = new OpenAI({
     
 });
 
-const diff = fs.readFileSync('pr.diff', 'utf8');
+const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
 
 (async () => {
   try {
