@@ -10,7 +10,7 @@ const rBracket = ']'
  */
 function pathToProperty (object, path) {
   const curatedSteps = extractSteps(path)
-  return getPropertyRecursive(object, curatedSteps)
+  return findPropertyRecursive(object, curatedSteps)
 }
 
 function extractSteps (path) {
@@ -50,7 +50,7 @@ function extractSteps (path) {
   return steps.curatedSteps
 }
 
-function getPropertyRecursive (data, steps) {
+function findPropertyRecursive (data, steps) {
   let value
   const step = steps.shift()
   try {
@@ -72,7 +72,7 @@ function getPropertyRecursive (data, steps) {
       value = data[step]
     }
     if (steps.length > 0) {
-      return getPropertyRecursive(value, steps)
+      return findPropertyRecursive(value, steps)
     } else {
       return value
     }
