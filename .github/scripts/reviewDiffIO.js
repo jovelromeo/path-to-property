@@ -3,7 +3,7 @@ const OpenAI = require('openai');
 const { execSync } = require('child_process');
 
 // Parse command line arguments
-function parseArgs() {
+const args = (() => {
   const args = {};
   process.argv.slice(2).forEach(arg => {
     if (arg.startsWith('--')) {
@@ -12,9 +12,7 @@ function parseArgs() {
     }
   });
   return args;
-}
-
-const args = parseArgs();
+})();
 
 // Configuration with command line args and environment variable fallbacks
 const CONFIG = {
