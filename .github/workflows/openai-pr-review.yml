@@ -1,0 +1,37 @@
+name: OpenAI PR Review Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  openai-pr-review:
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies and run review script
+        run: |
+          cd .github/scripts
+          npm install openai
+          gh pr diff $PR_NUMBER | node ./reviewDiffIO.js | gh pr comment $PR_NUMBER --body-file -
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_MODEL: "o4-mini"
+          MAX_COMPLETION_TOKENS: "2048"
+          MAX_DIFF_SIZE: "100000"
+      
+      # Cleanup is handled in the review.js script
