@@ -15,13 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get PR diff
-        id: diff
-        run: |
-          gh pr diff ${{ github.event.pull_request.number }} > /tmp/diff.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -31,11 +24,12 @@ jobs:
         run: |
           cd .github/scripts
           npm install openai
-          node ./review.js
+          gh pr diff ${{ github.event.pull_request.number }} | node ./review.js --pr-number=${{ github.event.pull_request.number }} --output-file=/tmp/pr-review.md
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_MODEL: "o4-mini"
+          MAX_COMPLETION_TOKENS: "2048"
+          MAX_DIFF_SIZE: "100000"
       
-      - name: Empty diff file
-        run: |
-          echo "" > /tmp/diff.txt
+      # Cleanup is handled in the review.js script
