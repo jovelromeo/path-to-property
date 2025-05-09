@@ -15,17 +15,36 @@ const args = (() => {
 })();
 
 // Configuration with command line args and environment variable fallbacks
+// Parse and validate integer arguments
+function parseIntArg(val, name, fallback) {
+  const parsed = parseInt(val);
+  if (isNaN(parsed)) {
+    console.error(`Invalid value for ${name}: '${val}'. Must be a valid integer.`);
+    process.exit(1);
+  }
+  return parsed;
+}
+
 const CONFIG = {
   model: args.model || process.env.OPENAI_MODEL || "o4-mini",
-  maxCompletionTokens: parseInt(args['max-completion-tokens'] || process.env.MAX_COMPLETION_TOKENS || "2048"),
-  maxDiffSize: parseInt(args['max-diff-size'] || process.env.MAX_DIFF_SIZE || "100000"), // ~100KB limit to avoid token issues
+  maxCompletionTokens: parseIntArg(
+    args['max-completion-tokens'] || process.env.MAX_COMPLETION_TOKENS || "2048",
+    'max-completion-tokens',
+    2048
+  ),
+  maxDiffSize: parseIntArg(
+    args['max-diff-size'] || process.env.MAX_DIFF_SIZE || "100000",
+    'max-diff-size',
+    100000
+  ), // ~100KB limit to avoid token issues
   prompt: args.prompt || process.env.OPENAI_REVIEW_PROMPT || "You are a senior software engineer reviewing a GitHub Pull Request diff. Provide concise, clear, helpful and constructive comments about the changes. Small section for potential issues and improvements. Response starts with '## AI Review Comments'"
 };
 
-// Initialize OpenAI client
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+
+const configToLog = { ...CONFIG };
+if (configToLog.prompt) configToLog.prompt = '[REDACTED]';
+console.log('Effective configuration:', JSON.stringify(configToLog, null, 2));
+
 
 // Read data from stdin (pipe)
 async function readFromStdin() {
@@ -50,8 +69,8 @@ async function readFromStdin() {
   });
 }
 
-// Main execution function
-async function main() {
+// Main execution function, allow injecting OpenAI client for testing
+async function main(openAiClient) {
   try {
     console.log('Reading diff from stdin...');
     // Read the diff from stdin
@@ -66,13 +85,19 @@ async function main() {
     
     // Check if diff is too large
     let diffContent = diff;
+    let truncated = false;
     if (diff.length > CONFIG.maxDiffSize) {
-      console.warn(`Diff is too large (${diff.length} bytes). Truncating to ${CONFIG.maxDiffSize} bytes.`);
+      console.warn(`WARNING: Diff is too large (${diff.length} bytes). Truncating to ${CONFIG.maxDiffSize} bytes.\nConsider increasing max-diff-size if needed.`);
       diffContent = diff.substring(0, CONFIG.maxDiffSize) + "\n\n[Diff truncated due to size limitations]";
+      truncated = true;
     }
-    
+    // If truncated, output marker to stdout for testability
+    if (truncated) {
+      process.stdout.write("[Diff truncated due to size limitations]\n");
+    }
+
     console.log(`Requesting review from OpenAI using model: ${CONFIG.model}`);
-    const response = await client.chat.completions.create({
+    const response = await openAiClient.chat.completions.create({
       model: CONFIG.model,
       messages: [
         {
@@ -101,7 +126,17 @@ async function main() {
   }
 }
 
-// Execute main function
-main().then(exitCode => {
-  process.exit(exitCode);
-});
+// Export main for testing
+module.exports = { main };
+
+// Initialize OpenAI client
+
+// Execute main function only if run as CLI, not when imported for tests
+if (require.main === module) {
+  const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  main(client).then(exitCode => {
+    process.exit(exitCode);
+  });
+}
