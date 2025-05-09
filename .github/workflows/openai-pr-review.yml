@@ -33,5 +33,3 @@ jobs:
           OPENAI_MODEL: "o4-mini"
           MAX_COMPLETION_TOKENS: "2048"
           MAX_DIFF_SIZE: "100000"
-      
-      # Cleanup is handled in the review.js script
