@@ -15,7 +15,7 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
       messages: [
         {
           role: "system",
-          content: "You are a senior software engineer reviewing a GitHub Pull Request diff. Provide concise, helpful, constructive comments about the changes, potential issues, and improvements. Response starts with '## AI Review Comments' and ends with '## End of IA Review Comments'."
+          content: "You are a senior software engineer reviewing a GitHub Pull Request diff. Provide concise, clear, helpful and constructive comments about the changes. Small section for potential issues and improvements. Response starts with '## AI Review Comments'"
         },
         {
           role: "user",
@@ -29,7 +29,6 @@ const diff = fs.readFileSync('/tmp/diff.txt', 'utf8');
     const comment = response.choices[0].message.content;
 
     const prNumber = process.env.GITHUB_REF.split('/')[2];
-    const repo = process.env.GITHUB_REPOSITORY;
 
     // Write the comment to a temporary file to avoid shell escaping issues
     const tempFilePath = '/tmp/comment.txt';
