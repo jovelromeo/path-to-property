@@ -21,48 +21,8 @@ const CONFIG = {
   model: args.model || process.env.OPENAI_MODEL || "o4-mini",
   maxTokens: parseInt(args['max-tokens'] || process.env.MAX_COMPLETION_TOKENS || "2048"),
   maxDiffSize: parseInt(args['max-diff-size'] || process.env.MAX_DIFF_SIZE || "100000"), // ~100KB limit to avoid token issues
-  prNumber: args['pr-number'] || null,
-  outputFile: args['output-file'],
   dryRun: args['dry-run'] === 'true' || false
 };
-
-// Validate required parameters
-if (!CONFIG.outputFile) {
-  console.error('Error: --output-file parameter is required');
-  console.log('Example usage: gh pr diff 123 | node review.js --pr-number=123 --output-file=review.md');
-  process.exit(1);
-}
-
-// Get PR number from arguments, environment, or prompt
-function getPrNumber() {
-  // First check if provided as command line argument
-  if (CONFIG.prNumber) {
-    return CONFIG.prNumber;
-  }
-  
-  // Then try to get from GITHUB_REF
-  const githubRef = process.env.GITHUB_REF;
-  if (githubRef) {
-    const match = githubRef.match(/refs\/pull\/(\d+)\/merge/);
-    if (match) {
-      return match[1];
-    }
-    console.warn(`Note: GITHUB_REF found but in unexpected format: ${githubRef}`);
-  }
-  
-  // If we're in CI and couldn't get PR number, that's an error
-  if (process.env.CI) {
-    throw new Error('Could not determine PR number. Please provide --pr-number argument.');
-  }
-  
-  // For local usage, allow manual input or return null for dry-run mode
-  if (CONFIG.dryRun) {
-    console.log('Dry run mode: No PR number needed');
-    return null;
-  }
-  
-  throw new Error('PR number not provided. Use --pr-number=<number> argument.');
-}
 
 // Initialize OpenAI client
 const client = new OpenAI({
@@ -113,14 +73,6 @@ async function main() {
       diffContent = diff.substring(0, CONFIG.maxDiffSize) + "\n\n[Diff truncated due to size limitations]";
     }
     
-    // Get PR number
-    const prNumber = getPrNumber();
-    if (prNumber) {
-      console.log(`Processing PR #${prNumber}`);
-    } else {
-      console.log('Running in dry-run mode (no PR number provided)');
-    }
-    
     console.log(`Requesting review from OpenAI using model: ${CONFIG.model}`);
     const response = await client.chat.completions.create({
       model: CONFIG.model,
@@ -138,38 +90,15 @@ async function main() {
     });
 
     const comment = response.choices[0].message.content;
-    console.log(`Generated review comment (${comment.length} characters)`);
+    console.error(`Generated review comment (${comment.length} characters)`);
 
-    // Write the comment to the output file
-    fs.writeFileSync(CONFIG.outputFile, comment);
-    console.log(`Saved comment to ${CONFIG.outputFile}`);
-
-    // If we have a PR number and we're not in dry-run mode, post the comment
-    if (prNumber && !CONFIG.dryRun) {
-      console.log(`Posting comment to PR #${prNumber}`);
-      execSync(`gh pr comment ${prNumber} --body-file "${CONFIG.outputFile}"`, {
-        env: {
-          ...process.env,
-        },
-        stdio: 'inherit',
-      });
-    } else if (CONFIG.dryRun) {
-      console.log('Dry run mode: Skipping comment posting to GitHub');
-      console.log('Comment content has been saved to:', CONFIG.outputFile);
-    }
+    // Always output the comment to stdout for piping
+    process.stdout.write(comment);
     
-    console.log('Review process completed successfully.');
+    console.error('Review process completed successfully.');
     return 0;
   } catch (error) {
     console.error('Error in review process:', error);
-    // Save the error to a file for debugging
-    try {
-      const errorFile = `${CONFIG.outputFile}.error.log`;
-      fs.writeFileSync(errorFile, JSON.stringify(error, null, 2));
-      console.error(`Error details saved to: ${errorFile}`);
-    } catch (logError) {
-      console.error('Failed to write error log:', logError);
-    }
     return 1;
   }
 }

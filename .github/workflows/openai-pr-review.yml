@@ -10,6 +10,8 @@ permissions:
 jobs:
   openai-pr-review:
     runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
 
     steps:
       - name: Checkout code
@@ -24,7 +26,7 @@ jobs:
         run: |
           cd .github/scripts
           npm install openai
-          gh pr diff ${{ github.event.pull_request.number }} | node ./review.js --pr-number=${{ github.event.pull_request.number }} --output-file=/tmp/pr-review.md
+          gh pr diff $PR_NUMBER | node ./reviewDiffIO.js | gh pr comment $PR_NUMBER --body-file -
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
