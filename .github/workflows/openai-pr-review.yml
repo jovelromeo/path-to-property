@@ -20,7 +20,7 @@ jobs:
         run: |
           gh pr diff ${{ github.event.pull_request.number }} > /tmp/diff.txt
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}txt
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
