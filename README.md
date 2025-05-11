@@ -24,6 +24,22 @@ The path would be equivalent to doing as follows
 ```js
     obj.redjar['countries.info'].find(x=>x.country === 'ARG').values[0] // 'good'
 ```
+
+## Accessing Properties with Special Characters
+Here's how to use `pathToProperty` to access properties with special characters in their keys:
+```js
+    const pathToProperty = require('path-to-property');
+    const obj = {
+        'space key': {
+            'special!@#': 'Hello World'
+        }
+    };
+    const path = '"space key"."special!@#"';
+    const desiredProperty = pathToProperty(obj, path);
+    console.log(desiredProperty); // 'Hello World'
+```
+This demonstrates accessing properties using keys with spaces and special characters by wrapping them in quotes.
+
 ## Path posibilities
 The path string is defined with the properties key (or array find key:value) separated by a colon.
 - Keys with dots: 
