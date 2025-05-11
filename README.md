@@ -24,6 +24,47 @@ The path would be equivalent to doing as follows
 ```js
     obj.redjar['countries.info'].find(x=>x.country === 'ARG').values[0] // 'good'
 ```
+## Complex Nested Structure Example
+Here's an example of extracting a value from a complex nested structure involving multiple arrays and objects:
+```js
+    const pathToProperty = require('path-to-property');
+    const complexObj = {
+        level1: {
+            level2: [
+                { id: 'a', data: { name: 'Alice', age: 30 } },
+                { id: 'b', data: { name: 'Bob', age: 25 } }
+            ],
+            moreLevels: {
+                level3: {
+                    items: [
+                        { key: 'x', value: [10, 20, 30] },
+                        { key: 'y', value: [40, 50, 60] }
+                    ]
+                }
+            }
+        }
+    };
+    const complexPath = 'level1.moreLevels.level3.items.[key:y].value.2';
+    const extractedValue = pathToProperty(complexObj, complexPath);
+    console.log(extractedValue); // 60
+```
+
+## Special Characters in Path Example
+To handle path strings containing special characters or non-standard key names, use quotes:
+```js
+    const pathToProperty = require('path-to-property');
+    const objWithSpecialKeys = {
+        'root.level': {
+            "sub-level": {
+                'weird.key': 'Special Value'
+            }
+        }
+    };
+    const specialPath = 'root.level."sub-level"."weird.key"';
+    const specialValue = pathToProperty(objWithSpecialKeys, specialPath);
+    console.log(specialValue); // 'Special Value'
+```
+
 ## Path posibilities
 The path string is defined with the properties key (or array find key:value) separated by a colon.
 - Keys with dots: 
