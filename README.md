@@ -24,6 +24,47 @@ The path would be equivalent to doing as follows
 ```js
     obj.redjar['countries.info'].find(x=>x.country === 'ARG').values[0] // 'good'
 ```
+
+### Example 1: Accessing a Deeply Nested Property Through an Array and Object Combination
+
+- **Code Snippet**:
+  ```js
+  const pathToProperty = require('path-to-property');
+  const obj = {
+      level1: {
+          items: [
+              { id: 'item1', details: { available: true } },
+              { id: 'item2', details: { available: false } }
+          ]
+      }
+  };
+  const path = 'level1.items.[id:item1].details.available';
+  const desiredProperty = pathToProperty(obj, path);
+  console.log(desiredProperty); // true
+  ```
+
+- **Explanation**: This example demonstrates how to access a property within an object that is nested inside an array. It combines object and array traversal to retrieve the `available` property of the item with `id: 'item1'.
+
+### Example 2: Handling Keys with Special Characters in Nested Arrays
+
+- **Code Snippet**:
+  ```js
+  const pathToProperty = require('path-to-property');
+  const obj = {
+      data: {
+          'special.items': [
+              { 'key-1': { value: 10 } },
+              { 'key-2': { value: 20 } }
+          ]
+      }
+  };
+  const path = 'data."special.items".[key-2].value';
+  const desiredProperty = pathToProperty(obj, path);
+  console.log(desiredProperty); // 20
+  ```
+
+- **Explanation**: This example shows how to handle keys with special characters, such as dots and hyphens, within nested arrays. It retrieves the `value` property of the object with the key `'key-2'`.
+
 ## Path posibilities
 The path string is defined with the properties key (or array find key:value) separated by a colon.
 - Keys with dots: 
