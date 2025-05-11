@@ -77,6 +77,42 @@ E.g.
     console.log(desiredProp); // path value
 ```
 
+## Examples
+
+### Accessing Deeply Nested Properties
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    level1: {
+        level2: {
+            level3: {
+                level4: {
+                    value: 'Deep Value'
+                }
+            }
+        }
+    }
+};
+const path = 'level1.level2.level3.level4.value';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // 'Deep Value'
+```
+
+### Handling Complex Array Structures
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    users: [
+        { id: 1, name: 'Alice', active: true },
+        { id: 2, name: 'Bob', active: false },
+        { id: 3, name: 'Charlie', active: true }
+    ]
+};
+const path = 'users.[id:2].name';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // 'Bob'
+```
+
 Fell free to add issues or make some improvements.
 
 Hope this can help, probably for defining the same logic to find a value from different data providers and structures.
