@@ -77,6 +77,42 @@ E.g.
     console.log(desiredProp); // path value
 ```
 
+## Additional Examples
+
+### Example 1: Mixed Data Types in Paths
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    root: {
+        'level.one': [
+            { id: 1, data: { 'value.array': [10, 20, 30] } },
+            { id: 2, data: { 'value.array': [40, 50, 60] } }
+        ]
+    }
+};
+const path = 'root."level.one".[id:2].data."value.array".1';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // 50
+```
+
+### Example 2: Nested Arrays and Complex Conditions
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    hierarchy: [
+        {
+            layer: [
+                { key: 'first', values: [{ number: 1 }, { number: 2 }] },
+                { key: 'second', values: [{ number: 3 }, { number: 4 }] }
+            ]
+        }
+    ]
+};
+const path = 'hierarchy.0.layer.[key:"second"].values.[number:4]';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // { number: 4 }
+```
+
 Fell free to add issues or make some improvements.
 
 Hope this can help, probably for defining the same logic to find a value from different data providers and structures.
