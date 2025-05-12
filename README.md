@@ -24,6 +24,39 @@ The path would be equivalent to doing as follows
 ```js
     obj.redjar['countries.info'].find(x=>x.country === 'ARG').values[0] // 'good'
 ```
+
+### Example 1: Accessing Deeply Nested Object Properties
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    level1: {
+        level2: {
+            level3: [
+                { key: 'value1' },
+                { key: 'value2', target: 'desiredValue' }
+            ]
+        }
+    }
+};
+const path = 'level1.level2.level3.1.target';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // 'desiredValue'
+```
+
+### Example 2: Using Array Index with Conditional Find
+```js
+const pathToProperty = require('path-to-property');
+const obj = {
+    data: [
+        { id: 1, items: ['a', 'b', 'c'] },
+        { id: 2, items: ['x', 'y', 'z'] }
+    ]
+};
+const path = 'data.[id:2].items.0';
+const desiredProperty = pathToProperty(obj, path);
+console.log(desiredProperty); // 'x'
+```
+
 ## Path posibilities
 The path string is defined with the properties key (or array find key:value) separated by a colon.
 - Keys with dots: 
