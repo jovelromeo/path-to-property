@@ -24,6 +24,36 @@ The path would be equivalent to doing as follows
 ```js
     obj.redjar['countries.info'].find(x=>x.country === 'ARG').values[0] // 'good'
 ```
+
+## Additional Examples
+
+### Accessing Nested Arrays
+```js
+const pathToProperty = require('path-to-property');
+const data = {
+    users: [
+        { id: 1, details: { name: 'Alice', active: true } },
+        { id: 2, details: { name: 'Bob', active: false } }
+    ]
+};
+const path = 'users.[id:1].details.name';
+const result = pathToProperty(data, path); 
+console.log(result); // 'Alice'
+```
+
+### Handling Complex Keys
+```js
+const pathToProperty = require('path-to-property');
+const dataset = {
+    'complex key': {
+        'another.complex:key': 'Value'
+    }
+};
+const path = '"complex key"."another.complex:key"';
+const output = pathToProperty(dataset, path); 
+console.log(output); // 'Value'
+```
+
 ## Path posibilities
 The path string is defined with the properties key (or array find key:value) separated by a colon.
 - Keys with dots: 
