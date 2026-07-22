@@ -80,7 +80,3 @@ E.g.
 Fell free to add issues or make some improvements.
 
 Hope this can help, probably for defining the same logic to find a value from different data providers and structures.
-
-Buy me coffe:
-- BTC: 3PXTqzvQFucGMy71vmyYFwnTKmQCAYKozj
-- LTC: M8ZB5F3xVK1gnCUiJaRUe6jkR8RdEa9TPZ 
